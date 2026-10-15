@@ -14,7 +14,7 @@ Sistema de cadastro e consulta de **Livros**, **Autores** e **Assuntos** para um
 docker compose up -d --build
 ```
 
-Na primeira subida o próprio container monta o projeto Symfony, instala as dependências, cria o banco e aplica todas as migrations automaticamente — demora ~1-2 min. Acompanhe pelos logs:
+Na subida, o container instala as dependências, cria os bancos (desenvolvimento e testes) e aplica as migrations automaticamente — demora ~1-2 min. Acompanhe pelos logs:
 
 ```bash
 docker compose logs -f php
