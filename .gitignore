@@ -1,0 +1,17 @@
+# Projeto Symfony gerado automaticamente dentro do container
+/app/vendor/
+/app/var/
+/app/.env.local
+/app/.env.local.php
+/app/.env.*.local
+/app/public/bundles/
+
+# Editor / SO
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+
+# Instruções locais para o Claude Code (não deve ir pro repositório)
+CLAUDE.md

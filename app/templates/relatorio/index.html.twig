@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Relatório: livros por autor{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Livros por autor</h1>
+            <p class="text-muted mb-0">Consulta feita a partir da view <code>vw_relatorio_livros_por_autor</code>.</p>
+        </div>
+        <a href="{{ path('relatorio_pdf') }}" class="btn btn-outline-primary" target="_blank">Baixar PDF</a>
+    </div>
+
+    {% if porAutor is empty %}
+        <p class="text-muted">Nenhum dado disponível ainda. Cadastre livros com ao menos um autor.</p>
+    {% else %}
+        {% set totalGeral = 0 %}
+        {% for grupo in porAutor %}
+            {% set totalGeral = totalGeral + grupo.total %}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>{{ grupo.autor.nome }}</strong>
+                    <span class="badge text-bg-primary">{{ grupo.livros|length }} livro(s)</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Editora</th>
+                                <th>Edição</th>
+                                <th>Ano</th>
+                                <th>Assuntos</th>
+                                <th class="text-end">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for livro in grupo.livros %}
+                                <tr>
+                                    <td>{{ livro.livro_titulo }}</td>
+                                    <td>{{ livro.livro_editora }}</td>
+                                    <td>{{ livro.livro_edicao }}</td>
+                                    <td>{{ livro.livro_ano }}</td>
+                                    <td>{{ livro.livro_assuntos ?: '—' }}</td>
+                                    <td class="text-end">{{ livro.livro_valor|format_currency('BRL', locale='pt_BR') }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-light">
+                                <th colspan="5" class="text-end">Subtotal do autor</th>
+                                <th class="text-end">{{ grupo.total|format_currency('BRL', locale='pt_BR') }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="text-end">
+            <h2 class="h5">Total geral: {{ totalGeral|format_currency('BRL', locale='pt_BR') }}</h2>
+        </div>
+    {% endif %}
+{% endblock %}

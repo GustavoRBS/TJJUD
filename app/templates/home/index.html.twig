@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Início{% endblock %}
+
+{% block body %}
+    <div class="p-5 bg-light rounded-3 mb-4">
+        <h1 class="display-6">Sistema de Biblioteca</h1>
+        <p class="lead mb-0">Cadastro de livros, autores e assuntos, com relatório gerencial.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="h5 card-title">Livros</h2>
+                    <p class="card-text text-muted flex-grow-1">Cadastre livros, defina preço e vincule autores e assuntos.</p>
+                    <a href="{{ path('livro_index') }}" class="btn btn-primary">Acessar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="h5 card-title">Autores</h2>
+                    <p class="card-text text-muted flex-grow-1">Cadastro dos autores que podem ser vinculados a livros.</p>
+                    <a href="{{ path('autor_index') }}" class="btn btn-primary">Acessar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="h5 card-title">Assuntos</h2>
+                    <p class="card-text text-muted flex-grow-1">Cadastro dos assuntos/categorias dos livros.</p>
+                    <a href="{{ path('assunto_index') }}" class="btn btn-primary">Acessar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-primary">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="h5 card-title">Relatório</h2>
+                    <p class="card-text text-muted flex-grow-1">Livros agrupados por autor, com total de valor, em tela ou PDF.</p>
+                    <a href="{{ path('relatorio_index') }}" class="btn btn-outline-primary">Acessar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

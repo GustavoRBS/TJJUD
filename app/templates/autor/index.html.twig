@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Autores{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Autores</h1>
+        <a href="{{ path('autor_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Novo autor</a>
+    </div>
+
+    <div class="card card-listagem shadow-sm">
+        <div class="card-body">
+            <form method="get" class="mb-3">
+                <input type="hidden" name="porPagina" value="{{ porPagina }}">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="busca" value="{{ busca }}" class="form-control" placeholder="Buscar por nome do autor">
+                </div>
+            </form>
+
+            {% if total == 0 %}
+                {% if busca %}
+                    <p class="text-muted mb-0">Nenhum resultado encontrado para “{{ busca }}”.</p>
+                {% else %}
+                    <p class="text-muted mb-0">Nenhum autor cadastrado ainda.</p>
+                {% endif %}
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nome</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for autor in autores %}
+                                <tr>
+                                    <td>{{ autor.codAu }}</td>
+                                    <td><a href="{{ path('autor_show', {id: autor.codAu}) }}" class="link-tabela">{{ autor.nome }}</a></td>
+                                    <td class="text-center">
+                                        <a href="{{ path('autor_show', {id: autor.codAu}) }}" class="btn btn-icone btn-ver" title="Ver" aria-label="Ver"><i class="bi bi-eye"></i></a>
+                                        <a href="{{ path('autor_edit', {id: autor.codAu}) }}" class="btn btn-icone btn-editar" title="Editar" aria-label="Editar"><i class="bi bi-pencil-square"></i></a>
+                                        <form action="{{ path('autor_delete', {id: autor.codAu}) }}" method="post" class="d-inline" id="form-excluir-autor-{{ autor.codAu }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ autor.codAu) }}">
+                                            <button type="button" class="btn btn-icone btn-excluir" data-bs-toggle="modal" data-bs-target="#modalExcluir" data-nome="o autor “{{ autor.nome }}”" data-form="form-excluir-autor-{{ autor.codAu }}" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {{ include('_paginacao.html.twig', {rota: 'autor_index', paginaAtual: paginaAtual, porPagina: porPagina, total: total, totalPaginas: totalPaginas, busca: busca}) }}
+            {% endif %}
+        </div>
+    </div>
+
+    {{ include('_confirmar_exclusao.html.twig') }}
+{% endblock %}

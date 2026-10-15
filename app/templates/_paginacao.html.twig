@@ -1,0 +1,33 @@
+{# espera: rota, paginaAtual, porPagina, total, totalPaginas, busca #}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+    <form method="get" class="d-flex align-items-center gap-2">
+        {% if busca %}
+            <input type="hidden" name="busca" value="{{ busca }}">
+        {% endif %}
+        <label for="porPagina" class="form-label mb-0 text-muted small">Itens por página</label>
+        <select name="porPagina" id="porPagina" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+            {% for opcao in [10, 20, 50] %}
+                <option value="{{ opcao }}" {{ opcao == porPagina ? 'selected' }}>{{ opcao }}</option>
+            {% endfor %}
+        </select>
+        <span class="text-muted small">{{ total }} registro(s)</span>
+    </form>
+
+    {% if totalPaginas > 1 %}
+        <nav aria-label="Paginação">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item {{ paginaAtual <= 1 ? 'disabled' }}">
+                    <a class="page-link" href="{{ path(rota, {pagina: paginaAtual - 1, porPagina: porPagina, busca: busca}) }}" aria-label="Anterior"><i class="bi bi-chevron-left"></i></a>
+                </li>
+                {% for p in 1..totalPaginas %}
+                    <li class="page-item {{ p == paginaAtual ? 'active' }}">
+                        <a class="page-link" href="{{ path(rota, {pagina: p, porPagina: porPagina, busca: busca}) }}">{{ p }}</a>
+                    </li>
+                {% endfor %}
+                <li class="page-item {{ paginaAtual >= totalPaginas ? 'disabled' }}">
+                    <a class="page-link" href="{{ path(rota, {pagina: paginaAtual + 1, porPagina: porPagina, busca: busca}) }}" aria-label="Próxima"><i class="bi bi-chevron-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+</div>

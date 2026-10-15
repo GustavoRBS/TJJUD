@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar autor{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('autor_index') }}">Autores</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Editar autor</li>
+        </ol>
+    </nav>
+
+    <div class="card card-formulario shadow-sm">
+        <div class="card-body">
+            <h1 class="h4 mb-3 pb-3 border-bottom">Editar autor</h1>
+
+            {{ include('autor/_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

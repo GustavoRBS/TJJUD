@@ -1,0 +1,6 @@
+{{ form_start(form) }}
+    {{ form_row(form.nome) }}
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ path('autor_index') }}" class="btn btn-outline-secondary">Cancelar</a>
+{{ form_end(form) }}

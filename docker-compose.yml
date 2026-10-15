@@ -1,0 +1,67 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: tjjud_php
+    volumes:
+      - ./app:/var/www/html
+      - ./skeleton:/skeleton:ro
+    environment:
+      COMPOSER_ALLOW_SUPERUSER: "1"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - tjjud
+
+  nginx:
+    image: nginx:alpine
+    container_name: tjjud_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+    networks:
+      - tjjud
+
+  database:
+    image: mysql:8.4
+    container_name: tjjud_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: tjjud
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - tjjud
+
+  adminer:
+    image: adminer
+    container_name: tjjud_adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database
+    networks:
+      - tjjud
+
+volumes:
+  db_data:
+
+networks:
+  tjjud:
+    driver: bridge

@@ -1,0 +1,37 @@
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-8 mb-3">
+            {{ form_row(form.titulo) }}
+        </div>
+        <div class="col-md-4 mb-3">
+            {{ form_row(form.editora) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            {{ form_row(form.edicao) }}
+        </div>
+        <div class="col-md-4 mb-3">
+            {{ form_row(form.anoPublicacao) }}
+        </div>
+        <div class="col-md-4 mb-3">
+            {{ form_row(form.valor) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.autores) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.assuntos) }}
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ path('livro_index') }}" class="btn btn-outline-secondary">Cancelar</a>
+{{ form_end(form) }}
+
+<script src="{{ asset('js/campo-moeda.js') }}"></script>
+<script src="{{ asset('vendor/tom-select/tom-select.complete.min.js') }}"></script>
+<script src="{{ asset('js/select-multiplo.js') }}"></script>
+

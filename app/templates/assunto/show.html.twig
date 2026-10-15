@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Assunto: {{ assunto.descricao }}{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('assunto_index') }}">Assuntos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ assunto.descricao }}</li>
+        </ol>
+    </nav>
+
+    <div class="card card-formulario shadow-sm">
+        <div class="card-body">
+            <h1 class="h4 mb-3 pb-3 border-bottom">{{ assunto.descricao }}</h1>
+
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                    <tr>
+                        <th>Código</th>
+                        <td>{{ assunto.codAs }}</td>
+                    </tr>
+                    <tr>
+                        <th>Descrição</th>
+                        <td>{{ assunto.descricao }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h2 class="h5 mt-4 mb-3">Livros deste assunto</h2>
+            {% if assunto.livros is empty %}
+                <p class="text-muted">Nenhum livro vinculado.</p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for livro in assunto.livros %}
+                                <tr>
+                                    <td><a href="{{ path('livro_show', {id: livro.codI}) }}" class="link-tabela">{{ livro.titulo }}</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            <div class="mt-4">
+                <a href="{{ path('assunto_edit', {id: assunto.codAs}) }}" class="btn btn-primary">Editar</a>
+                <a href="{{ path('assunto_index') }}" class="btn btn-outline-secondary">Voltar</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

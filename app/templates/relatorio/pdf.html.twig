@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de livros por autor</title>
+    <style>
+        body { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: #212529; }
+        h1 { font-size: 16px; margin-bottom: 4px; }
+        .subtitulo { color: #6c757d; margin-bottom: 16px; font-size: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+        th, td { border: 1px solid #dee2e6; padding: 4px 6px; text-align: left; }
+        th { background-color: #f1f3f5; }
+        .text-end { text-align: right; }
+        .autor-nome { background-color: #343a40; color: #fff; padding: 4px 8px; font-size: 12px; margin-top: 12px; }
+        .subtotal td { font-weight: bold; background-color: #f8f9fa; }
+        .total-geral { margin-top: 8px; font-size: 13px; text-align: right; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Relatório: livros por autor</h1>
+    <p class="subtitulo">Gerado em {{ 'now'|date('d/m/Y H:i') }} — consulta a partir da view vw_relatorio_livros_por_autor</p>
+
+    {% set totalGeral = 0 %}
+    {% for grupo in porAutor %}
+        {% set totalGeral = totalGeral + grupo.total %}
+        <div class="autor-nome">{{ grupo.autor.nome }}</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Editora</th>
+                    <th>Edição</th>
+                    <th>Ano</th>
+                    <th>Assuntos</th>
+                    <th class="text-end">Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for livro in grupo.livros %}
+                    <tr>
+                        <td>{{ livro.livro_titulo }}</td>
+                        <td>{{ livro.livro_editora }}</td>
+                        <td>{{ livro.livro_edicao }}</td>
+                        <td>{{ livro.livro_ano }}</td>
+                        <td>{{ livro.livro_assuntos ?: '-' }}</td>
+                        <td class="text-end">{{ livro.livro_valor|format_currency('BRL', locale='pt_BR') }}</td>
+                    </tr>
+                {% endfor %}
+                <tr class="subtotal">
+                    <td colspan="5" class="text-end">Subtotal do autor</td>
+                    <td class="text-end">{{ grupo.total|format_currency('BRL', locale='pt_BR') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    {% endfor %}
+
+    <div class="total-geral">Total geral: {{ totalGeral|format_currency('BRL', locale='pt_BR') }}</div>
+</body>
+</html>

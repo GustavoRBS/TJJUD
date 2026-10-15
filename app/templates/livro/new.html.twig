@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Novo livro{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('livro_index') }}">Livros</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Novo livro</li>
+        </ol>
+    </nav>
+
+    <div class="card card-formulario shadow-sm">
+        <div class="card-body">
+            <h1 class="h4 mb-3 pb-3 border-bottom">Novo livro</h1>
+
+            {{ include('livro/_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

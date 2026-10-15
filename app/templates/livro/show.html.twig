@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Livro: {{ livro.titulo }}{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('livro_index') }}">Livros</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ livro.titulo }}</li>
+        </ol>
+    </nav>
+
+    <div class="card card-formulario shadow-sm">
+        <div class="card-body">
+            <h1 class="h4 mb-3 pb-3 border-bottom">{{ livro.titulo }}</h1>
+
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                    <tr><th>Código</th><td>{{ livro.codI }}</td></tr>
+                    <tr><th>Título</th><td>{{ livro.titulo }}</td></tr>
+                    <tr><th>Editora</th><td>{{ livro.editora }}</td></tr>
+                    <tr><th>Edição</th><td>{{ livro.edicao }}</td></tr>
+                    <tr><th>Ano de publicação</th><td>{{ livro.anoPublicacao }}</td></tr>
+                    <tr><th>Valor</th><td>{{ livro.valor|format_currency('BRL', locale='pt_BR') }}</td></tr>
+                    <tr>
+                        <th>Autores</th>
+                        <td>
+                            {% for autor in livro.autores %}
+                                <a href="{{ path('autor_show', {id: autor.codAu}) }}" class="badge text-bg-primary text-decoration-none">{{ autor.nome }}</a>
+                            {% else %}
+                                <span class="text-muted">Nenhum</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Assuntos</th>
+                        <td>
+                            {% for assunto in livro.assuntos %}
+                                <a href="{{ path('assunto_show', {id: assunto.codAs}) }}" class="badge text-bg-secondary text-decoration-none">{{ assunto.descricao }}</a>
+                            {% else %}
+                                <span class="text-muted">Nenhum</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ path('livro_edit', {id: livro.codI}) }}" class="btn btn-primary">Editar</a>
+                <a href="{{ path('livro_index') }}" class="btn btn-outline-secondary">Voltar</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
