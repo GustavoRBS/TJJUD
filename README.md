@@ -6,17 +6,17 @@ Sistema de cadastro e consulta de **Livros**, **Autores** e **Assuntos** para um
 
 ## Como rodar
 
-**Pré-requisito:** Docker Desktop instalado e rodando, com WSL2 habilitado.
+**Pré-requisito:** Docker instalado e rodando — Docker Desktop no Windows/macOS, ou Docker Engine + Docker Compose no Linux.
 
-> Se a instalação do Docker Desktop falhar pedindo a feature "Virtual Machine Platform", abra um PowerShell **como administrador**, rode `wsl --install`, reinicie e reinstale o Docker Desktop.
+> No Windows, o Docker Desktop requer o WSL2 habilitado. Se a instalação falhar pedindo a feature "Virtual Machine Platform", abra um PowerShell **como administrador**, rode `wsl --install`, reinicie e reinstale o Docker Desktop.
 
-```powershell
+```bash
 docker compose up -d --build
 ```
 
 Na primeira subida o próprio container monta o projeto Symfony, instala as dependências, cria o banco e aplica todas as migrations automaticamente — demora ~1-2 min. Acompanhe pelos logs:
 
-```powershell
+```bash
 docker compose logs -f php
 ```
 
@@ -30,7 +30,7 @@ Quando terminar, acesse:
 
 Para popular o banco com dados de exemplo (10 autores, 10 assuntos, 20 livros):
 
-```powershell
+```bash
 docker compose exec php php bin/console doctrine:fixtures:load --no-interaction
 ```
 
@@ -55,15 +55,15 @@ TJJUD/
 ├── docker/
 │   ├── php/                  # Dockerfile + php.ini do PHP-FPM
 │   └── nginx/                 # Configuração do Nginx
-├── skeleton/                  # Arquivos base copiados para app/ apenas num bootstrap do zero
 ├── docker-compose.yml
-├── docker-entrypoint.sh       # Script que monta/atualiza o projeto Symfony no boot do container
+├── docker-entrypoint.sh       # Script executado no boot do container PHP (composer install,
+│                              # aguarda o banco, aplica migrations em dev e test)
 └── Makefile                   # Atalhos (opcional, requer `make`)
 ```
 
 ## Comandos úteis
 
-```powershell
+```bash
 # Shell no container PHP
 docker compose exec php sh
 
@@ -84,7 +84,23 @@ docker compose exec php php bin/phpunit --filter=testNomeDoMetodo
 docker compose exec php php bin/console cache:clear
 ```
 
-Com `make` disponível (Git Bash/WSL): `make up`, `make sh`, `make migrate`, `make mysql`, `make logs` — veja o `Makefile`.
+Com `make` disponível (Git Bash/WSL/Linux/macOS): `make up`, `make sh`, `make migrate`, `make mysql`, `make logs` — veja o `Makefile`.
+
+## Decisões técnicas
+
+- **Symfony 7.4 (LTS)** — versão com suporte de longo prazo, escolhida deliberadamente em vez da `7.x` mais recente.
+- **Camada de serviço**: cada entidade tem um `Service` (`App\Service\{Livro,Autor,Assunto,Relatorio}Service`) que concentra toda a regra de negócio — persistência, paginação, proteção contra exclusão de registros vinculados, tratamento de erros de banco. Os `Controller`s ficam finos: só lidam com HTTP (formulário, CSRF, flash messages, redirecionamento).
+- **Relatório via VIEW do banco**: `vw_relatorio_livros_por_autor` é criada por migration (não é uma entidade Doctrine) e consultada via DBAL puro (`Connection::fetchAllAssociative`), deliberadamente bypassando o ORM só nesse ponto de leitura. Um livro com múltiplos autores aparece uma vez sob cada autor, por design.
+- **PDF com Dompdf**: o relatório em PDF usa um template Twig HTML independente (sem Bootstrap/CDN, já que o Dompdf não busca estilos externos de forma confiável) renderizado para HTML e convertido pelo Dompdf — sem depender de um serviço externo de geração de PDF.
+- **Validação de unicidade só na camada de aplicação**: duplicidade de nome/título é bloqueada via `#[UniqueEntity]` do Symfony Validator, sem índice `UNIQUE` no banco. Isso é intencional — o desafio pede para seguir o modelo de dados do diagrama original integralmente, e um índice de unicidade é regra de negócio, não ajuste de performance.
+- **Testes com Foundry + DAMA Doctrine Test Bundle**: as factories (`App\Factory\*`) geram dados de teste realistas (Faker, locale `pt_BR`), e cada teste roda isolado numa transação revertida ao final, sem precisar recriar o schema a cada execução.
+
+## Scripts de implantação
+
+- **Migrations**: cada mudança de schema tem sua própria migration incremental em `app/migrations/` (uma tabela/alteração por arquivo), aplicadas automaticamente no boot do container (`docker-entrypoint.sh`) tanto no banco de desenvolvimento (`tjjud`) quanto no de teste (`tjjud_test`).
+- **A VIEW do relatório** é criada pela migration `app/migrations/Version20261015020500.php` — não existe script manual separado para isso, ela nasce junto com o restante do schema.
+- **Recriar o banco do zero**: `docker compose down -v` (apaga o volume do MySQL) seguido de `docker compose up -d --build` recria o container do banco vazio e reaplica todas as migrations automaticamente, sem passo manual.
+- **Dados de exemplo**: `docker compose exec php php bin/console doctrine:fixtures:load --no-interaction` popula o banco via as factories do Foundry (ver "Como rodar" acima).
 
 ## Observações
 

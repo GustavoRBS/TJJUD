@@ -3,21 +3,6 @@ set -e
 
 cd /var/www/html
 
-if [ ! -f composer.json ]; then
-    echo ">>> Nenhum projeto Symfony encontrado. Criando projeto do zero..."
-    composer create-project symfony/skeleton:"7.4.*" . --no-interaction --no-progress
-
-    echo ">>> Instalando pacotes (webapp + Doctrine ORM)..."
-    composer require symfony/webapp-pack --no-interaction --no-progress
-    composer require symfony/orm-pack --no-interaction --no-progress
-    composer require --dev symfony/maker-bundle --no-interaction --no-progress
-
-    echo ">>> Aplicando layout base (Bootstrap 5) e configuração do banco..."
-    cp -rf /skeleton/. .
-
-    mkdir -p var/cache var/log
-fi
-
 echo ">>> composer install"
 composer install --no-interaction --no-progress --optimize-autoloader
 
@@ -38,10 +23,10 @@ $pdo->exec("FLUSH PRIVILEGES");
 
 if [ -d migrations ] && [ -n "$(find migrations -maxdepth 1 -name 'Version*.php' -print -quit 2>/dev/null)" ]; then
     echo ">>> Executando migrations (dev)..."
-    php bin/console doctrine:migrations:migrate --no-interaction || true
+    php bin/console doctrine:migrations:migrate --no-interaction
 
     echo ">>> Executando migrations (test)..."
-    php bin/console doctrine:migrations:migrate --env=test --no-interaction || true
+    php bin/console doctrine:migrations:migrate --env=test --no-interaction
 fi
 
 exec "$@"

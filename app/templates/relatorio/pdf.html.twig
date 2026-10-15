@@ -20,9 +20,7 @@
     <h1>Relatório: livros por autor</h1>
     <p class="subtitulo">Gerado em {{ 'now'|date('d/m/Y H:i') }} — consulta a partir da view vw_relatorio_livros_por_autor</p>
 
-    {% set totalGeral = 0 %}
     {% for grupo in porAutor %}
-        {% set totalGeral = totalGeral + grupo.total %}
         <div class="autor-nome">{{ grupo.autor.nome }}</div>
         <table>
             <thead>

@@ -14,9 +14,7 @@
     {% if porAutor is empty %}
         <p class="text-muted">Nenhum dado disponível ainda. Cadastre livros com ao menos um autor.</p>
     {% else %}
-        {% set totalGeral = 0 %}
         {% for grupo in porAutor %}
-            {% set totalGeral = totalGeral + grupo.total %}
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <strong>{{ grupo.autor.nome }}</strong>

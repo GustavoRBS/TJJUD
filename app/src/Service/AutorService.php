@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Autor;
 use App\Repository\AutorRepository;
 use App\Service\Exception\RegraDeNegocioException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -41,15 +42,30 @@ class AutorService
         ];
     }
 
+    /**
+     * @throws RegraDeNegocioException se o banco de dados rejeitar a gravação
+     */
     public function criar(Autor $autor): void
     {
         $this->em->persist($autor);
-        $this->em->flush();
+
+        try {
+            $this->em->flush();
+        } catch (DBALException $e) {
+            throw new RegraDeNegocioException('Não foi possível salvar o autor devido a um erro no banco de dados. Tente novamente.', previous: $e);
+        }
     }
 
+    /**
+     * @throws RegraDeNegocioException se o banco de dados rejeitar a gravação
+     */
     public function atualizar(Autor $autor): void
     {
-        $this->em->flush();
+        try {
+            $this->em->flush();
+        } catch (DBALException $e) {
+            throw new RegraDeNegocioException('Não foi possível atualizar o autor devido a um erro no banco de dados. Tente novamente.', previous: $e);
+        }
     }
 
     /**
@@ -68,8 +84,8 @@ class AutorService
         try {
             $this->em->remove($autor);
             $this->em->flush();
-        } catch (ForeignKeyConstraintViolationException) {
-            throw new RegraDeNegocioException('Não foi possível excluir este autor devido a vínculos existentes no banco de dados.');
+        } catch (ForeignKeyConstraintViolationException $e) {
+            throw new RegraDeNegocioException('Não foi possível excluir este autor devido a vínculos existentes no banco de dados.', previous: $e);
         }
     }
 }

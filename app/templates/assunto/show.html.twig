@@ -41,7 +41,7 @@
                         <tbody>
                             {% for livro in assunto.livros %}
                                 <tr>
-                                    <td><a href="{{ path('livro_show', {id: livro.codI}) }}" class="link-tabela">{{ livro.titulo }}</a></td>
+                                    <td><a href="{{ path('livro_show', {id: livro.codL}) }}" class="link-tabela">{{ livro.titulo }}</a></td>
                                 </tr>
                             {% endfor %}
                         </tbody>

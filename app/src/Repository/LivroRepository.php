@@ -30,7 +30,7 @@ class LivroRepository extends ServiceEntityRepository
         }
 
         $total = (int) (clone $qb)
-            ->select('COUNT(l.codI)')
+            ->select('COUNT(l.codL)')
             ->getQuery()
             ->getSingleScalarResult();
 

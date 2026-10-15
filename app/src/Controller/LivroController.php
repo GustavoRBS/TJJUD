@@ -40,11 +40,15 @@ class LivroController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $livroService->criar($livro);
+            try {
+                $livroService->criar($livro);
 
-            $this->addFlash('success', sprintf('Livro "%s" cadastrado com sucesso.', $livro->getTitulo()));
+                $this->addFlash('success', sprintf('Livro "%s" cadastrado com sucesso.', $livro->getTitulo()));
 
-            return $this->redirectToRoute('livro_index');
+                return $this->redirectToRoute('livro_index');
+            } catch (RegraDeNegocioException $e) {
+                $this->addFlash('danger', $e->getMessage());
+            }
         }
 
         return $this->render('livro/new.html.twig', [
@@ -68,11 +72,15 @@ class LivroController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $livroService->atualizar($livro);
+            try {
+                $livroService->atualizar($livro);
 
-            $this->addFlash('success', 'Livro atualizado com sucesso.');
+                $this->addFlash('success', 'Livro atualizado com sucesso.');
 
-            return $this->redirectToRoute('livro_index');
+                return $this->redirectToRoute('livro_index');
+            } catch (RegraDeNegocioException $e) {
+                $this->addFlash('danger', $e->getMessage());
+            }
         }
 
         return $this->render('livro/edit.html.twig', [
@@ -84,7 +92,7 @@ class LivroController extends AbstractController
     #[Route('/{id}/excluir', name: 'livro_delete', methods: ['POST'])]
     public function delete(Request $request, Livro $livro, LivroService $livroService): Response
     {
-        if (!$this->isCsrfTokenValid('delete'.$livro->getCodI(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('delete'.$livro->getCodL(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Token de segurança inválido. Tente novamente.');
 
             return $this->redirectToRoute('livro_index');

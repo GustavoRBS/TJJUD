@@ -40,11 +40,15 @@ class AutorController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $autorService->criar($autor);
+            try {
+                $autorService->criar($autor);
 
-            $this->addFlash('success', sprintf('Autor "%s" cadastrado com sucesso.', $autor->getNome()));
+                $this->addFlash('success', sprintf('Autor "%s" cadastrado com sucesso.', $autor->getNome()));
 
-            return $this->redirectToRoute('autor_index');
+                return $this->redirectToRoute('autor_index');
+            } catch (RegraDeNegocioException $e) {
+                $this->addFlash('danger', $e->getMessage());
+            }
         }
 
         return $this->render('autor/new.html.twig', [
@@ -68,11 +72,15 @@ class AutorController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $autorService->atualizar($autor);
+            try {
+                $autorService->atualizar($autor);
 
-            $this->addFlash('success', 'Autor atualizado com sucesso.');
+                $this->addFlash('success', 'Autor atualizado com sucesso.');
 
-            return $this->redirectToRoute('autor_index');
+                return $this->redirectToRoute('autor_index');
+            } catch (RegraDeNegocioException $e) {
+                $this->addFlash('danger', $e->getMessage());
+            }
         }
 
         return $this->render('autor/edit.html.twig', [

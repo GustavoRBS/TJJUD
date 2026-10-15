@@ -120,11 +120,11 @@ class LivroControllerTest extends WebTestCase
         self::assertSelectorTextNotContains('body', 'Totalmente Diferente');
     }
 
-    public function testNovoComTituloDuplicadoMostraErroDeValidacao(): void
+    public function testNovoComTituloEEdicaoDuplicadosMostraErroDeValidacao(): void
     {
         $client = static::createClient();
         $autor = AutorFactory::createOne();
-        LivroFactory::createOne(['titulo' => 'Livro Existente', 'autores' => [$autor]]);
+        LivroFactory::createOne(['titulo' => 'Livro Existente', 'edicao' => 1, 'autores' => [$autor]]);
 
         $crawler = $client->request('GET', '/livros/novo');
         $form = $crawler->selectButton('Salvar')->form([
@@ -139,7 +139,28 @@ class LivroControllerTest extends WebTestCase
         $client->submit($form);
 
         self::assertResponseStatusCodeSame(422);
-        self::assertSelectorTextContains('.invalid-feedback', 'Já existe um livro cadastrado com esse título.');
+        self::assertSelectorTextContains('.invalid-feedback', 'Já existe um livro cadastrado com esse título e edição.');
+    }
+
+    public function testNovoComMesmoTituloEEdicaoDiferenteEhPermitido(): void
+    {
+        $client = static::createClient();
+        $autor = AutorFactory::createOne();
+        LivroFactory::createOne(['titulo' => 'Dom Casmurro', 'edicao' => 1, 'autores' => [$autor]]);
+
+        $crawler = $client->request('GET', '/livros/novo');
+        $form = $crawler->selectButton('Salvar')->form([
+            'livro[titulo]' => 'Dom Casmurro',
+            'livro[editora]' => 'Editora Exemplo',
+            'livro[edicao]' => '2',
+            'livro[anoPublicacao]' => '2024',
+            'livro[valor]' => '10.00',
+            'livro[autores]' => [(string) $autor->getCodAu()],
+        ]);
+
+        $client->submit($form);
+
+        self::assertResponseRedirects('/livros');
     }
 
     public function testEditarAtualizaTituloDoLivro(): void
@@ -148,7 +169,7 @@ class LivroControllerTest extends WebTestCase
         $autor = AutorFactory::createOne();
         $livro = LivroFactory::createOne(['titulo' => 'Título Antigo', 'autores' => [$autor]]);
 
-        $crawler = $client->request('GET', '/livros/'.$livro->getCodI().'/editar');
+        $crawler = $client->request('GET', '/livros/'.$livro->getCodL().'/editar');
         $form = $crawler->selectButton('Salvar')->form([
             'livro[titulo]' => 'Título Atualizado',
         ]);
@@ -167,7 +188,7 @@ class LivroControllerTest extends WebTestCase
         $livro = LivroFactory::createOne(['titulo' => 'Livro A Excluir', 'autores' => [$autor]]);
 
         $crawler = $client->request('GET', '/livros');
-        $form = $crawler->filter('form[action="/livros/'.$livro->getCodI().'/excluir"]')->form();
+        $form = $crawler->filter('form[action="/livros/'.$livro->getCodL().'/excluir"]')->form();
 
         $client->submit($form);
 

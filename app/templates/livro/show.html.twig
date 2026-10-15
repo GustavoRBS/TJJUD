@@ -16,7 +16,7 @@
 
             <div class="table-responsive">
                 <table class="table table-bordered mb-0">
-                    <tr><th>Código</th><td>{{ livro.codI }}</td></tr>
+                    <tr><th>Código</th><td>{{ livro.codL }}</td></tr>
                     <tr><th>Título</th><td>{{ livro.titulo }}</td></tr>
                     <tr><th>Editora</th><td>{{ livro.editora }}</td></tr>
                     <tr><th>Edição</th><td>{{ livro.edicao }}</td></tr>
@@ -46,7 +46,7 @@
             </div>
 
             <div class="mt-4">
-                <a href="{{ path('livro_edit', {id: livro.codI}) }}" class="btn btn-primary">Editar</a>
+                <a href="{{ path('livro_edit', {id: livro.codL}) }}" class="btn btn-primary">Editar</a>
                 <a href="{{ path('livro_index') }}" class="btn btn-outline-secondary">Voltar</a>
             </div>
         </div>

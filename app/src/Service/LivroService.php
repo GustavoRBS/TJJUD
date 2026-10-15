@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Livro;
 use App\Repository\LivroRepository;
 use App\Service\Exception\RegraDeNegocioException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -41,15 +42,30 @@ class LivroService
         ];
     }
 
+    /**
+     * @throws RegraDeNegocioException se o banco de dados rejeitar a gravação
+     */
     public function criar(Livro $livro): void
     {
         $this->em->persist($livro);
-        $this->em->flush();
+
+        try {
+            $this->em->flush();
+        } catch (DBALException $e) {
+            throw new RegraDeNegocioException('Não foi possível salvar o livro devido a um erro no banco de dados. Tente novamente.', previous: $e);
+        }
     }
 
+    /**
+     * @throws RegraDeNegocioException se o banco de dados rejeitar a gravação
+     */
     public function atualizar(Livro $livro): void
     {
-        $this->em->flush();
+        try {
+            $this->em->flush();
+        } catch (DBALException $e) {
+            throw new RegraDeNegocioException('Não foi possível atualizar o livro devido a um erro no banco de dados. Tente novamente.', previous: $e);
+        }
     }
 
     /**
@@ -60,8 +76,8 @@ class LivroService
         try {
             $this->em->remove($livro);
             $this->em->flush();
-        } catch (ForeignKeyConstraintViolationException) {
-            throw new RegraDeNegocioException('Não foi possível excluir este livro devido a vínculos existentes no banco de dados.');
+        } catch (ForeignKeyConstraintViolationException $e) {
+            throw new RegraDeNegocioException('Não foi possível excluir este livro devido a vínculos existentes no banco de dados.', previous: $e);
         }
     }
 }

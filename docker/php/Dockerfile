@@ -16,6 +16,7 @@ RUN apk add --no-cache \
         intl \
         zip \
         opcache \
+        bcmath \
     && apk del $PHPIZE_DEPS
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

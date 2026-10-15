@@ -6,9 +6,12 @@ services:
     container_name: tjjud_php
     volumes:
       - ./app:/var/www/html
-      - ./skeleton:/skeleton:ro
     environment:
       COMPOSER_ALLOW_SUPERUSER: "1"
+      # Real env vars take priority over .env*, garantindo que um clone novo
+      # (sem app/.env.local, que é gitignored) nunca caia no DATABASE_URL
+      # placeholder (Postgres) que vem no app/.env gerado pelo Symfony Flex.
+      DATABASE_URL: "mysql://symfony:symfony@database:3306/tjjud?serverVersion=8.4&charset=utf8mb4"
     depends_on:
       database:
         condition: service_healthy

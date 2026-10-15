@@ -43,8 +43,8 @@
                         <tbody>
                             {% for livro in livros %}
                                 <tr>
-                                    <td>{{ livro.codI }}</td>
-                                    <td><a href="{{ path('livro_show', {id: livro.codI}) }}" class="link-tabela">{{ livro.titulo }}</a></td>
+                                    <td>{{ livro.codL }}</td>
+                                    <td><a href="{{ path('livro_show', {id: livro.codL}) }}" class="link-tabela">{{ livro.titulo }}</a></td>
                                     <td>{{ livro.editora }}</td>
                                     <td>{{ livro.edicao }}</td>
                                     <td>{{ livro.anoPublicacao }}</td>
@@ -60,11 +60,11 @@
                                         {% endfor %}
                                     </td>
                                     <td class="text-center text-nowrap">
-                                        <a href="{{ path('livro_show', {id: livro.codI}) }}" class="btn btn-icone btn-ver" title="Ver" aria-label="Ver"><i class="bi bi-eye"></i></a>
-                                        <a href="{{ path('livro_edit', {id: livro.codI}) }}" class="btn btn-icone btn-editar" title="Editar" aria-label="Editar"><i class="bi bi-pencil-square"></i></a>
-                                        <form action="{{ path('livro_delete', {id: livro.codI}) }}" method="post" class="d-inline" id="form-excluir-livro-{{ livro.codI }}">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livro.codI) }}">
-                                            <button type="button" class="btn btn-icone btn-excluir" data-bs-toggle="modal" data-bs-target="#modalExcluir" data-nome="o livro “{{ livro.titulo }}”" data-form="form-excluir-livro-{{ livro.codI }}" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></button>
+                                        <a href="{{ path('livro_show', {id: livro.codL}) }}" class="btn btn-icone btn-ver" title="Ver" aria-label="Ver"><i class="bi bi-eye"></i></a>
+                                        <a href="{{ path('livro_edit', {id: livro.codL}) }}" class="btn btn-icone btn-editar" title="Editar" aria-label="Editar"><i class="bi bi-pencil-square"></i></a>
+                                        <form action="{{ path('livro_delete', {id: livro.codL}) }}" method="post" class="d-inline" id="form-excluir-livro-{{ livro.codL }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livro.codL) }}">
+                                            <button type="button" class="btn btn-icone btn-excluir" data-bs-toggle="modal" data-bs-target="#modalExcluir" data-nome="o livro “{{ livro.titulo }}”" data-form="form-excluir-livro-{{ livro.codL }}" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></button>
                                         </form>
                                     </td>
                                 </tr>

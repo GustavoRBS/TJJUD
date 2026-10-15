@@ -49,7 +49,7 @@ class LivroServiceTest extends KernelTestCase
 
         $this->livroService->criar($livro);
 
-        self::assertNotNull($livro->getCodI());
+        self::assertNotNull($livro->getCodL());
         self::assertCount(1, $this->livroService->listar());
         self::assertCount(1, $livro->getAutores());
         self::assertCount(1, $livro->getAssuntos());
@@ -63,7 +63,7 @@ class LivroServiceTest extends KernelTestCase
         $this->livroService->atualizar($livro);
 
         self::getContainer()->get(EntityManagerInterface::class)->clear();
-        $recarregado = self::getContainer()->get(LivroRepository::class)->find($livro->getCodI());
+        $recarregado = self::getContainer()->get(LivroRepository::class)->find($livro->getCodL());
 
         self::assertSame('Título Novo', $recarregado->getTitulo());
     }
@@ -73,7 +73,7 @@ class LivroServiceTest extends KernelTestCase
         $autor = AutorFactory::createOne();
         $assunto = AssuntoFactory::createOne();
         $livro = LivroFactory::createOne(['autores' => [$autor], 'assuntos' => [$assunto]]);
-        $id = $livro->getCodI();
+        $id = $livro->getCodL();
 
         $this->livroService->excluir($livro);
 

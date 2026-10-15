@@ -6,9 +6,6 @@ doctrine:
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '16'
 
-        # Keep Messenger's own infrastructure table out of doctrine:migrations:diff
-        schema_filter: '~^(?!messenger_messages$)~'
-
         profiling_collect_backtrace: '%kernel.debug%'
     orm:
         validate_xml_mapping: true

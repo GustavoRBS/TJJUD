@@ -40,11 +40,15 @@ class AssuntoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $assuntoService->criar($assunto);
+            try {
+                $assuntoService->criar($assunto);
 
-            $this->addFlash('success', sprintf('Assunto "%s" cadastrado com sucesso.', $assunto->getDescricao()));
+                $this->addFlash('success', sprintf('Assunto "%s" cadastrado com sucesso.', $assunto->getDescricao()));
 
-            return $this->redirectToRoute('assunto_index');
+                return $this->redirectToRoute('assunto_index');
+            } catch (RegraDeNegocioException $e) {
+                $this->addFlash('danger', $e->getMessage());
+            }
         }
 
         return $this->render('assunto/new.html.twig', [
@@ -68,11 +72,15 @@ class AssuntoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $assuntoService->atualizar($assunto);
+            try {
+                $assuntoService->atualizar($assunto);
 
-            $this->addFlash('success', 'Assunto atualizado com sucesso.');
+                $this->addFlash('success', 'Assunto atualizado com sucesso.');
 
-            return $this->redirectToRoute('assunto_index');
+                return $this->redirectToRoute('assunto_index');
+            } catch (RegraDeNegocioException $e) {
+                $this->addFlash('danger', $e->getMessage());
+            }
         }
 
         return $this->render('assunto/edit.html.twig', [

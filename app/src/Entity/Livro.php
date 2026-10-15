@@ -11,13 +11,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LivroRepository::class)]
 #[ORM\Table(name: 'Livro')]
-#[UniqueEntity(fields: ['titulo'], message: 'Já existe um livro cadastrado com esse título.')]
+#[UniqueEntity(fields: ['titulo', 'edicao'], message: 'Já existe um livro cadastrado com esse título e edição.', errorPath: 'titulo')]
 class Livro
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(name: 'CodI', type: 'integer')]
-    private ?int $codI = null;
+    #[ORM\Column(name: 'CodL', type: 'integer')]
+    private ?int $codL = null;
 
     #[ORM\Column(name: 'Titulo', length: 40)]
     #[Assert\NotBlank(message: 'Informe o título do livro.')]
@@ -49,7 +49,7 @@ class Livro
      */
     #[ORM\ManyToMany(targetEntity: Autor::class, inversedBy: 'livros')]
     #[ORM\JoinTable(name: 'Livro_Autor')]
-    #[ORM\JoinColumn(name: 'Livro_CodI', referencedColumnName: 'CodI')]
+    #[ORM\JoinColumn(name: 'Livro_CodL', referencedColumnName: 'CodL')]
     #[ORM\InverseJoinColumn(name: 'Autor_CodAu', referencedColumnName: 'CodAu')]
     #[Assert\Count(min: 1, minMessage: 'Selecione pelo menos um autor.')]
     private Collection $autores;
@@ -59,7 +59,7 @@ class Livro
      */
     #[ORM\ManyToMany(targetEntity: Assunto::class, inversedBy: 'livros')]
     #[ORM\JoinTable(name: 'Livro_Assunto')]
-    #[ORM\JoinColumn(name: 'Livro_CodI', referencedColumnName: 'CodI')]
+    #[ORM\JoinColumn(name: 'Livro_CodL', referencedColumnName: 'CodL')]
     #[ORM\InverseJoinColumn(name: 'Assunto_codAs', referencedColumnName: 'codAs')]
     private Collection $assuntos;
 
@@ -69,9 +69,9 @@ class Livro
         $this->assuntos = new ArrayCollection();
     }
 
-    public function getCodI(): ?int
+    public function getCodL(): ?int
     {
-        return $this->codI;
+        return $this->codL;
     }
 
     public function getTitulo(): ?string
